@@ -1,6 +1,24 @@
-<element name="test">
-  <h1>Hello world!</h1>
-  <script>
-    console.log('javascript!', this)
-  </script>
+<element name="test-tag">
+  <template shadow data="#my-data" data-map="#my-data-map">
+    <h1>Hello shadow world!</h1>
+    <h3>Name: <span id="name"></span></h3>
+    <h3>Value: <span id="val"></span></h3>
+    <input type="range" min="1" max="100" id="slider" />
+    <ul>
+      <li id="tags"></li>
+    </ul>
+  </template>
+  <data id="my-data">
+  { 
+    name: "test",
+    tags: ['one', 'two']
+  }
+  </data>
+  <data-map data="#my-data">
+  {
+    '#name': name,
+    '#tags': tags,
+    '#val': this.querySelector('#slider').value
+  }
+  </data>
 </element>

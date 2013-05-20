@@ -1,14 +1,13 @@
 <html>
   <head>
-    <script src="polymer/platform/CustomElements/custom-elements.js"></script>
-    <script src="polymer/platform/HTMLImports/html-imports.js"></script>
+    <script src="polymer/platform/platform.min.js"></script>
 
-    <link rel="import" href="test.html">
-
-    <script src="web.js"></script>
+    <link rel="import" href="test.html" type="web-element" sync>
   </head>
   <body>
     Hi
-    <test></test>
+    <test-tag></test-tag>
+
+    <script src="web.js"></script>
   </body>
 </html>

@@ -1,6 +1,15 @@
 <element name="test">
-  <h1>Hello world!</h1>
-  <script>
-    console.log('javascript!', this)
-  </script>
+  <model id="testData">
+    { name: "hello" }
+  </model>
+  <public>
+    <h1>Hello light world!</h1>
+  </public>
+  <private class="<?js test ?>">
+    <h1>Hello shadow world!</h1>
+    <?js
+      console.log('javascript!', this);
+      window.TESTING = true;
+    ?>
+  </private>
 </element>
