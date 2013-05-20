@@ -2,6 +2,8 @@
 // Misc helpers
 //
 
+var toArray = function(arrayLike) { return [].slice.call(arrayLike) }
+
 var isProperty = function(obj, key) {
   if(Array.isArray(obj) && key == 'length') return false; // for some reason length likes to show up in array loops
   return obj && obj.hasOwnProperty && obj.hasOwnProperty(key);
@@ -24,9 +26,27 @@ var extend = function(obj) {
   return obj;
 };
 
-var getter = function(proto, name, func) {
+var bind = function(func, context) { return function() { return func.apply(context, arguments) }}
+
+var getter = function(proto, name, func, context) {
+  if(context) var func = bind(func, context);
   Object.defineProperty(proto, name, { get: func })
   return func;
+}
+
+var setter = function(proto, name, func, context) {
+  if(context) var func = bind(func, context);
+  Object.defineProperty(proto, name, { set: func })
+  return func;
+}
+
+var mixin = function(MixinClass, NewClass) {
+  // Mixes an object into a class prototype, or an object
+  var MixedObj = extend(NewClass.prototype || NewClass || {}, MixinClass.prototype || MixinClass);
+  if(!NewClass.prototype) var NewClass = MixedObj; // return the new object if NewClass doesn't have a prootype
+  else NewClass.prototype = MixedObj;
+
+  return NewClass;
 }
 
 var cloneElement = function(name, elem) {
@@ -34,6 +54,81 @@ var cloneElement = function(name, elem) {
  newElem.attributes = elem.attributes;
  return newElem;
 }
+
+var capitalize = function(str) { return str[0].toUpperCase() + str.slice(1); }
+
+var camelJoin = function() {
+  var args = toArray(arguments);
+  var capitalized = each(args, function(arg) { return capitalize(arg) });
+  capitalized[0] = capitalized[0].toLowerCase();
+  return capitalized.join('');
+}
+
+// 
+// Bare bones event handler
+//
+var EventHandler = function() {}
+var EH = EventHandler.prototype;
+
+EH.dispatchEvent = function() {
+  var args = toArray(arguments);
+  var eventName = args.shift(1);
+  each(this.getListeners(eventName), function(listenerInfo) {
+    listenerInfo.callback.apply(listenerInfo.context, args);
+  });
+}
+
+EH.addEventListener = function(eventName, callback, context) {
+  var listeners = this.getListeners(eventName);
+  listeners.push({ callback: callback, context: context });
+}
+
+EH.getListeners = function(eventName) {
+  this.listeners = this.listeners || {};
+  return this.listeners[eventName] || (this.listeners[eventName] = []);
+}
+
+// 
+// DataMapper
+//
+
+var WrappedProperty = mixin(EventHandler, function(obj, propertyName) {
+  this.obj = obj;
+  this.propertyName = propertyName;
+  this.value = this.obj[this.propertyName];
+
+  getter(obj, propertyName, this.get, this);
+  setter(obj, propertyName, this.set, this);
+})
+
+var WP = WrappedProperty.prototype;
+
+WP.get = function() {
+  var val = this.value;
+  // cover your eyes!! (we need to wrap the val in an object if it's properties are read-only)
+  if((val.___temp___ = 'temp') != val.__temp__) var val = Object(val);
+  delete val.___temp___;
+  // add a reference to this wrapper
+  val.wrapper = this;
+
+  return val;
+}
+
+WP.set = function(val) {
+  this.value = val;
+  this.dispatchEvent('change', this.get());
+
+  return this.get();
+}
+
+Object.prototype.wrapProperty = function(propertyName) {
+  return new WrappedProperty(this, propertyName);
+}
+
+TT = {one: 1, two: 2}
+TT.wrapProperty('one');
+TT.one.wrapper.addEventListener('change', function(val) { console.log('change', val) });
+TT.one = 2
 
 // 
 // ElementClassFactory
