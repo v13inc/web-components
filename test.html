@@ -1,9 +1,12 @@
 <element name="test-tag">
+  <template>
+    <h1>Hello light world!</h1>
+  </template>
   <template shadow data="#my-data" data-map="#my-data-map">
     <h1>Hello shadow world!</h1>
     <h3>Name: <span id="name"></span></h3>
     <h3>Value: <span id="val"></span></h3>
-    <input type="range" min="1" max="100" id="slider" />
+    <input id="slider" />
     <ul>
       <li id="tags"></li>
     </ul>
@@ -18,7 +21,7 @@
   {
     '#name': name,
     '#tags': tags,
-    '#val': this.querySelector('#slider').value
+    '#val': this.querySelector('#slider')
   }
   </data>
 </element>

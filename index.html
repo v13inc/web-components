@@ -2,10 +2,37 @@
   <head>
     <script src="polymer/platform/platform.min.js"></script>
 
-    <link rel="import" href="test.html" type="web-element" sync>
+    <!--<link rel="import" href="test.html" type="web-element" sync>-->
   </head>
   <body>
-    Hi
+    <element name="test-tag" type="web-element">
+      <template>
+        <h1>Hello light world!</h1>
+      </template>
+      <template shadow data="#my-data" data-map="#my-data-map">
+        <h1>Hello shadow world!</h1>
+        <h3>Name: <span id="name"></span></h3>
+        <h3>Value: <span id="val"></span></h3>
+        <input id="slider" />
+        <ul>
+          <li id="tags"></li>
+        </ul>
+      </template>
+      <data id="my-data">
+      { 
+        name: "test",
+        tags: ['one', 'two']
+      }
+      </data>
+      <data-map data="#my-data">
+      {
+        '#name': name,
+        '#tags': tags,
+        '#val': this.querySelector('#slider')
+      }
+      </data>
+    </element>
+
     <test-tag></test-tag>
 
     <script src="web.js"></script>
