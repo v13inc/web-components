@@ -1,6 +1,8 @@
 A proof-of-concent Web Components Framework (APOFWCF?)
 ======================================================
 
+Please see this JSBin for a live demo: http://jsbin.com/imetix/1/edit
+
 This is an early proof-of-concept web components framework, heavily inspired by [Polymer](http://www.polymer-project.org/). In fact, it uses all of their polyfills, so they probably deserve most of the credit (thanks for answering my original questions [ebidel](https://github.com/ebidel) and [sjmiles](https://github.com/sjmiles))!
 
 For background on web components and the various technologies used to create them, please read through the Polymer project website, and [Html5Rocks](http://www.html5rocks.com/en/tutorials/) if you get lost.
